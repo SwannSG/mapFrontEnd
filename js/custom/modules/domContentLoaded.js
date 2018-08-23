@@ -4,6 +4,13 @@ ws.DOMContentLoaded = () => {
         ws.hamburgerClicked(event);
     })
 
+    document.getElementsByClassName('vertical-menu__download')[0].addEventListener('click',
+        (event) => {
+            ws.btnGetDataClicked(event);
+        })
+
+    ws.getUIselectData();
+
 
     let createMap = () => {
         ws.map = L.map('map').setView(ws.CONFIG.MAP_INITIAL.latlng, ws.CONFIG.MAP_INITIAL.zoom);

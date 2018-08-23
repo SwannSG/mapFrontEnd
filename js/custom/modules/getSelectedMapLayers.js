@@ -4,11 +4,27 @@ ws.btnGetDataClicked = (event) => {
         check if resource exists on server.
         return promise, resolves to true|false
     */
-    
-    // turn spinner on
-    document.getElementsByClassName('user-select__get-data-spinner')[0].setAttribute('style',
-     "display: inline-block;");
-    
+    console.log('ws.btnGetDataClicked');
+
+    let turnSpinnerOn = () => {
+        document.getElementsByClassName('vertical-menu__download')[0].setAttribute('style',
+        "display: none;");
+       document.getElementsByClassName('vertical-menu__spinner')[0].setAttribute('style',
+        "display: inline-block;");
+    }
+
+    let turnSpinnerOff = () => {
+        document.getElementsByClassName('vertical-menu__download')[0].setAttribute('style',
+        "display: inline-block;");
+       document.getElementsByClassName('vertical-menu__spinner')[0].setAttribute('style',
+        "display: none;");
+    }
+
+
+    ws.btnGetDataClicked.on = turnSpinnerOn;
+    ws.btnGetDataClicked.off = turnSpinnerOff;
+ 
+
      let checkIfRsrcExists = (rsrcId) => {
         return new Promise( (resolve, reject) => {
             fetch(rsrcId, {method: 'HEAD', cache: 'no-cache'})
@@ -19,6 +35,40 @@ ws.btnGetDataClicked = (event) => {
             }
         )}
     
+// NEW CODE
+    let readUIselectorValues = () => {
+        let layersToFetch = [];
+        for (let el of document.getElementsByClassName('user-select__group-1')) {
+            let input = {rsrcId:'', legendTitle: '', fileType: '', fileFormat: ''}
+            input.rsrcId = el.getElementsByTagName('select')[0].value;
+            input.legendTitle = el.getElementsByTagName('input')[0].value;
+            input.fileType = input.rsrcId.split('.').pop();
+            if (input.fileType==='zip') {
+                input.fileFormat =  input.rsrcId.split('.')[input.rsrcId.split('.').length-2]
+            }
+            else {
+                input.fileFormat = input.fileType
+            }
+
+            layersToFetch.push(input);
+        }
+        return layersToFetch;
+    }
+
+
+
+    if (window.getComputedStyle(document.getElementsByClassName('user-select')[0]).display==='none') {
+        // do nothing
+        return;
+    }
+
+    let layersToFetch = readUIselectorValues();
+
+    for (let layer of layersToFetch) {
+        if (layer.fileType === 'zip') {
+            ws.getJsonZipFile(layer.rsrcId, layer.fileFormat);
+        }
+    }
 
 
     let autoTitle = (province, title) => {

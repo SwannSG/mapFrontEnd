@@ -22,8 +22,20 @@
     &__entity {
         display: inline-block;
     }
+
+    &__spinner {
+        display: none;
+        width: 100%;
+        height: 100%;
+        background-size: contain;
+        background-image: url('../img/Spinner-0.7s-52px.svg');
+    }
 }
 
+.lds-spinner {
+    width: 20px;
+    height: 20px;
+}
 
 
 

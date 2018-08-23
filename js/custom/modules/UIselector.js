@@ -1,33 +1,24 @@
 // UI to select layers
 
-// !!!!move to JSON config file
-
-ws.UIdata = [
-    {"selectorType": "dropDownList",
-     "selectorLabel": "Ward Data for all skaaps",
-     "dropdownList": [
-        { "resource": {"id": "data/<file_to_get>",
-                        "display": "shows in drop down",
-                        "legendTitle": "skaap appears in legend"}
-        }
-     ]},
-     {"selectorType": "dropDownList",
-     "selectorLabel": "Shelters",
-     "dropdownList": [
-        { "resource": {"id": "data/<file_to_get>",
-                        "display": "Eastern Cape",
-                        "legendTitle": "Eastern Cape woman's shelters"}
-        }
-     ]},
-     {"selectorType": "dropDownList",
-     "selectorLabel": "Courts",
-     "dropdownList": [
-        { "resource": {"id": "data/<file_to_get>",
-                        "display": "Western Cape",
-                        "legendTitle": "Western Cape courts"}
-        }
-     ]},
-] 
+// get UI select config data
+ws.getUIselectData = () => {
+    fetch('data/UIdata.json')
+    .then(x =>  {if (x.ok) {
+                    return x.json()
+                }
+                else {
+                    console.log('ws.getUIselectData error getting data')
+                }
+    })
+    .then(jsonData => {
+        ws.UIdata = jsonData;
+        document.body.insertBefore(ws.createUserSelect(ws.UIdata),
+            document.getElementsByClassName('main')[0]);
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
 
 
 ws.createUserSelect = (uidata) =>  {
@@ -102,7 +93,3 @@ ws.createLegendTitle = (x, index) => {
     return result;
 }
 
-
-
-ref = document.getElementsByClassName('main')[0]
-document.body.insertBefore(ws.createUserSelect(ws.UIdata), ref);

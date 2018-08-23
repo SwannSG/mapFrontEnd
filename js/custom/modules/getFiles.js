@@ -1,5 +1,9 @@
 ws.getJsonZipFile = (rsrcId, rsrcName='', eventName='gotZipFileOk') => {
 
+    console.log('get zip file');
+    console.log(rsrcId, rsrcName);
+
+
     let jsZip = new JSZip();
 
     fetch(rsrcId)
@@ -31,6 +35,7 @@ ws.getJsonZipFile = (rsrcId, rsrcName='', eventName='gotZipFileOk') => {
         document.body.dispatchEvent(new CustomEvent(
             eventName,
             {detail: {
+                rsrcId: rsrcId,
                 rsrcName: rsrcName, 
                 data: x
                 }
@@ -96,9 +101,15 @@ ws.gotJsonRsrcOk = (event) => {
 }
 
 ws.gotZipFileOk = (event) => {
-    // turn spinner off
-    document.getElementsByClassName('user-select__get-data-spinner')[0].removeAttribute('style')
-    if (event.detail.rsrcName === 'wardDataTopoJsonZip') {
-        ws.wardLayerTopoJson(event.detail.data);
+    // ???????? turn spinner off
+    // document.getElementsByClassName('user-select__get-data-spinner')[0].removeAttribute('style')
+    if (event.detail.rsrcName === 'topojson') {
+        ws.layerTopoJson(event.detail.data,
+                             event.detail.rsrcId);
     }
 }
+
+
+
+
+

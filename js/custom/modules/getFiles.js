@@ -1,52 +1,125 @@
-ws.getJsonZipFile = (rsrcId, rsrcName='', eventName='gotZipFileOk') => {
-
-    console.log('get zip file');
-    console.log(rsrcId, rsrcName);
-
-
-    let jsZip = new JSZip();
-
-    fetch(rsrcId)
-    .then(x =>  {if (x.ok) {
-        // x: Response (from server)
-        return x;
-    }
-    else {
-        let errorText = `Error downloading <span>${rsrcId}</span>. (${x.statusText} ${x.status})`; 
-        ws.errorMsg(errorText);
-    } 
-    })
-    .then(x => {
-        // x.arrayBuffer: raw data of the zip file
-        return jsZip.loadAsync(x.arrayBuffer())
-    })
-    .then(x => {
-        // x: jsZip data structure
-        //      x.files = {<filename_1>:{} , <filename_2>:{}, ...}
-        //          we only have one filename which we get from Object.keys(x.files)[0] 
-        //      originalFileData (as string) = x.file(<filename>).async('string')
-        return x.file(Object.keys(x.files)[0]).async('string')
-    })
-    .then(x => {
-        // x: string representation of original JSON, which needs to be parsed 
-        return JSON.parse(x);
-    })
-    .then(x => {
-        document.body.dispatchEvent(new CustomEvent(
-            eventName,
-            {detail: {
-                rsrcId: rsrcId,
-                rsrcName: rsrcName, 
-                data: x
-                }
-            }));
-    })
-    .catch(err => {
-        console.log(err);
-        let errorText = `Error downloading <span>${rsrcId}</span>.`; 
-        ws.errorMsg(errorText);
+ws.getZipFile = (rsrcId) => {
+    return new Promise((resolve, reject) => {
+        let jsZip = new JSZip();
+        fetch(rsrcId)
+        .then(rspFromServer =>  {
+            if (rspFromServer.ok) {
+                return rspFromServer;
+            }
+            else {
+                return reject(rspFromServer);
+            }
+        })
+        .then(rspFromServer => {
+            // rspFromServer.arrayBuffer: raw data of the zip file
+            return jsZip.loadAsync(rspFromServer.arrayBuffer())
+        })
+        .then(zipData => {
+            // zipData: jsZip data structure
+            //      zipData.files = {<filename_1>:{} , <filename_2>:{}, ...}
+            //          we only have one filename which we get from Object.keys(zipData.files)[0] 
+            //      originalFileData (as string) = zipData.file(<filename>).async('string')
+            return zipData.file(Object.keys(zipData.files)[0]).async('string')
+        })
+        .then(jsonString => {
+            // jsonString: string representation of original JSON, which needs to be parsed 
+            return resolve(JSON.parse(jsonString));
+        })
+        .catch(error => {
+            // not sure what this error would look like
+            return reject(error);
+        })
     })
 }
+
+
+
+ws.getJsonZipFile = (layerDtl) => {
+    return new Promise( (resolve, reject) => {
+        let jsZip = new JSZip();
+        fetch(layerDtl.rsrcId)
+        .then(x =>  {if (x.ok) {
+            // x: Response (from server)
+            return x;
+        }
+        else {
+            let errorText = `Error downloading <span>${layerDtl.rsrcId}</span>. (${x.statusText} ${x.status})`; 
+            ws.errorMsg(errorText);
+        } 
+        })
+        .then(x => {
+            // x.arrayBuffer: raw data of the zip file
+            return jsZip.loadAsync(x.arrayBuffer())
+        })
+        .then(x => {
+            // x: jsZip data structure
+            //      x.files = {<filename_1>:{} , <filename_2>:{}, ...}
+            //          we only have one filename which we get from Object.keys(x.files)[0] 
+            //      originalFileData (as string) = x.file(<filename>).async('string')
+            return x.file(Object.keys(x.files)[0]).async('string')
+        })
+        .then(x => {
+            // x: string representation of original JSON, which needs to be parsed 
+            resolve(JSON.parse(x), layerDtl);
+        })
+        .catch(error => {
+            reject(error);
+        })
+    })
+}
+
+
+
+
+
+
+
+// ws.getJsonZipFile = (layerDtl, eventName='gotZipFileOk') => {
+
+//     console.log('get zip file', layerDtl);
+
+//     let jsZip = new JSZip();
+
+//     fetch(layerDtl.rsrcId)
+//     .then(x =>  {if (x.ok) {
+//         // x: Response (from server)
+//         return x;
+//     }
+//     else {
+//         let errorText = `Error downloading <span>${layerDtl.rsrcId}</span>. (${x.statusText} ${x.status})`; 
+//         ws.errorMsg(errorText);
+//     } 
+//     })
+//     .then(x => {
+//         // x.arrayBuffer: raw data of the zip file
+//         return jsZip.loadAsync(x.arrayBuffer())
+//     })
+//     .then(x => {
+//         // x: jsZip data structure
+//         //      x.files = {<filename_1>:{} , <filename_2>:{}, ...}
+//         //          we only have one filename which we get from Object.keys(x.files)[0] 
+//         //      originalFileData (as string) = x.file(<filename>).async('string')
+//         return x.file(Object.keys(x.files)[0]).async('string')
+//     })
+//     .then(x => {
+//         // x: string representation of original JSON, which needs to be parsed 
+//         return JSON.parse(x);
+//     })
+//     .then(x => {
+//         document.body.dispatchEvent(new CustomEvent(
+//             eventName,
+//             {detail: {
+//                 layerDtl: layerDtl,
+//                 data: x
+//                 }
+//             }));
+//     })
+//     .catch(err => {
+//         console.log(err);
+//         let errorText = `Error downloading <span>${layerDtl.rsrcId}</span>.`; 
+//         ws.errorMsg(errorText);
+//     })
+// }
 
 
 

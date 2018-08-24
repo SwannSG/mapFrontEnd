@@ -62,14 +62,14 @@ ws.wardLayerGeoJson = (layer) => {
 }
 
 
-ws.layerTopoJson = (data, rsrcId) => {
+ws.addTopoJsonLayer = (data, layerDtl) => {
     // data: topoJSON
-    console.log('layerTopoJson', rsrcId);
+    console.log('layerTopoJson', layerDtl.rsrcId);
     let key = Object.keys(data.objects)[0]
     let geojson = topojson.feature(data, data.objects[key]);
     layer = L.geoJSON(geojson, {style: ws.styleFeature})
-    ws.nameLayer(layer, rsrcId)
-    ws.layers[rsrcId] = layer;
+    ws.nameLayer(layer, layerDtl.rsrcId)
+    ws.layers[layerDtl.rsrcId] = layer;
     layer.addTo(ws.map);
 }
 

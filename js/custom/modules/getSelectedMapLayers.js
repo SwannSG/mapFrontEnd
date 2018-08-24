@@ -39,24 +39,24 @@ ws.btnGetDataClicked = (event) => {
     let readUIselectorValues = () => {
         let layersToFetch = [];
         for (let el of document.getElementsByClassName('user-select__group-1')) {
-            let input = {rsrcId:'', legendTitle: '',
-             fileType: '', fileFormat: '',
-             layerType: "",
-             layerStyle: "",
-        }
-            input.layerType = el.getAttribute('data-layer-type');
-            input.layerStyle = el.getAttribute('data-layer-style');
-            input.rsrcId = el.getElementsByTagName('select')[0].value;
-            input.legendTitle = el.getElementsByTagName('input')[0].value;
-            input.fileType = input.rsrcId.split('.').pop();
-            if (input.fileType==='zip') {
-                input.fileFormat =  input.rsrcId.split('.')[input.rsrcId.split('.').length-2]
+            let layerDtl = {rsrcId:'', legendTitle: '',
+                        fileType: '', fileFormat: '',
+                        layerType: "",
+                        layerStyle: "",
+                        }
+            layerDtl.layerType = el.getAttribute('data-layer-type');
+            layerDtl.layerStyle = el.getAttribute('data-layer-style');
+            layerDtl.rsrcId = el.getElementsByTagName('select')[0].value;
+            layerDtl.legendTitle = el.getElementsByTagName('input')[0].value;
+            layerDtl.fileType = layerDtl.rsrcId.split('.').pop();
+            if (layerDtl.fileType==='zip') {
+                layerDtl.fileFormat =  layerDtl.rsrcId.split('.')[layerDtl.rsrcId.split('.').length-2]
             }
             else {
-                input.fileFormat = input.fileType
+                layerDtl.fileFormat = layerDtl.fileType
             }
 
-            layersToFetch.push(input);
+            layersToFetch.push(layerDtl);
         }
         return layersToFetch;
     }
@@ -70,11 +70,40 @@ ws.btnGetDataClicked = (event) => {
 
     let layersToFetch = readUIselectorValues();
 
-    for (let layer of layersToFetch) {
-        if (layer.fileType === 'zip') {
-            ws.getJsonZipFile(layer.rsrcId, layer.fileFormat);
+    let addLayerPromise = (layerDtl) => {
+        return new Promise( (resolve, reject) => {
+            if (layerDtl.fileType==='zip') {
+                ws.getZipFile(layerDtl.rsrcId)
+                .then(jsonData => {
+                    if (layerDtl.fileFormat==='topojson') {
+                        ws.addTopoJsonLayer(jsonData, layerDtl);
+                        return resolve('success')
+                        }
+                    })
+                .catch(error => {
+                    // zip file download has failed
+                    gk = error;
+                    console.log('zip file download has failed');
+                    return reject('fail')
+                })
+            }
+    
+        }
+    
+    )} 
+
+
+    let addLayersPromises = [];
+    for (let layerDtl of layersToFetch) {
+        // is layerDtl already on map ?
+        if (!ws.layers.hasOwnProperty(layerDtl.rsrcId)) {         
+            // get the resource and add promise
+            addLayersPromises.push(addLayerPromise(layerDtl))
         }
     }
+
+    gt = addLayersPromises[0]
+
 
 
     let autoTitle = (province, title) => {

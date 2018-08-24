@@ -47,6 +47,8 @@ ws.createUI_1 = (uidata) => {
     for (let [i, each] of uidata.entries()) {
         el = document.createElement('div');
         el.setAttribute('class', "user-select__group-1");
+        el.setAttribute('data-layer-type', each.layerType);
+        el.setAttribute('data-layer-style', each.layerStyle);
         let dropdown = ws.createDropdown(each, i);
         let legend = ws.createLegendTitle(each, i);
         let selectGroup =   `<div class="user-select__dropdown">

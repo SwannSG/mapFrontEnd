@@ -39,7 +39,13 @@ ws.btnGetDataClicked = (event) => {
     let readUIselectorValues = () => {
         let layersToFetch = [];
         for (let el of document.getElementsByClassName('user-select__group-1')) {
-            let input = {rsrcId:'', legendTitle: '', fileType: '', fileFormat: ''}
+            let input = {rsrcId:'', legendTitle: '',
+             fileType: '', fileFormat: '',
+             layerType: "",
+             layerStyle: "",
+        }
+            input.layerType = el.getAttribute('data-layer-type');
+            input.layerStyle = el.getAttribute('data-layer-style');
             input.rsrcId = el.getElementsByTagName('select')[0].value;
             input.legendTitle = el.getElementsByTagName('input')[0].value;
             input.fileType = input.rsrcId.split('.').pop();

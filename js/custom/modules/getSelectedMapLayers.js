@@ -6,6 +6,11 @@ ws.btnGetDataClicked = (event) => {
     */
     console.log('ws.btnGetDataClicked');
 
+    if (window.getComputedStyle(document.getElementsByClassName('user-select')[0]).display==='none') {
+        // do nothing
+        return;
+    }
+
     let turnSpinnerOn = () => {
         document.getElementsByClassName('vertical-menu__download')[0].setAttribute('style',
         "display: none;");
@@ -35,7 +40,6 @@ ws.btnGetDataClicked = (event) => {
             }
         )}
     
-// NEW CODE
     let readUIselectorValues = () => {
         let layersToFetch = [];
         for (let el of document.getElementsByClassName('user-select__group-1')) {
@@ -63,10 +67,6 @@ ws.btnGetDataClicked = (event) => {
 
 
 
-    if (window.getComputedStyle(document.getElementsByClassName('user-select')[0]).display==='none') {
-        // do nothing
-        return;
-    }
 
     let layersToFetch = readUIselectorValues();
 

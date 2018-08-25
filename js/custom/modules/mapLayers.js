@@ -61,16 +61,48 @@ ws.wardLayerGeoJson = (layer) => {
     layer.addTo(ws.map);
 }
 
-
 ws.addTopoJsonLayer = (data, layerDtl) => {
     // data: topoJSON
-    console.log('layerTopoJson', layerDtl.rsrcId);
+    console.log('layerDtl', layerDtl);
     let key = Object.keys(data.objects)[0]
     let geojson = topojson.feature(data, data.objects[key]);
     layer = L.geoJSON(geojson, {style: ws.styleFeature})
     ws.nameLayer(layer, layerDtl.rsrcId)
     ws.layers[layerDtl.rsrcId] = layer;
     layer.addTo(ws.map);
+}
+
+// NEW
+ws.addTopoJsonLayer = (data, layerDtl) => {
+    // data: topoJson
+    let addLegendFlag = false;
+    let key = Object.keys(data.objects)[0]
+    let geojson = topojson.feature(data, data.objects[key]);
+    if (layerDtl.layerType==='chloropleth') {
+        if (layerDtl.layerStyle==='default') {
+            // map area
+            let styleObj = {style: ws.styleFeature};
+            // legend "area"
+            let legendKey = layerDtl.layerType + '-' + layerDtl.layerStyle 
+            if (!ws.legends.onMap.hasOwnProperty(legendKey)) {
+                let legend = ws.legends.createChloroLegend(layerDtl.legendTitle, layerDtl.layerStyle);
+                addLegendFlag = true;
+            }
+        }
+        
+        // create layer
+        console.log('styleObj', styleObj);
+
+        layer = L.geoJSON(geojson, styleObj);
+        gt = layer;
+        layer.addTo(ws.map);
+        // track layers added to map
+        ws.layers[layerDtl.rsrcId] = layer;
+        // add legend to map
+        if (addLegendFlag) {
+            ws.legends.onMap[legendKey] = ws.legends.createLegend('bottomright', [col2legend]);
+        }
+    }
 }
 
 

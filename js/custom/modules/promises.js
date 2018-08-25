@@ -49,6 +49,7 @@ ws.promises.decodeZippedArrayBuff = (zipData) => {
 }
 
 ws.promises.parseJson = (jsonString) => {
+    // resolveValue: jsonObj
     return new Promise( (resolve, reject) => {
         try {
             resolve(JSON.parse(jsonString));

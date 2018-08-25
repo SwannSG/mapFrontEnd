@@ -1,4 +1,4 @@
-let createLegend = (pos, html) => {
+ws.legends.createLegend = (pos, html) => {
     /*  pos: string
         html: array of html stings
 
@@ -107,7 +107,7 @@ let createLegend_c = (title, rows) => {
 // legend(_c) of the form 
 //  title
 //  swatch  low <sep> high
-let createLegend_a = (title, rows, sep=' - ') => {
+ws.legends.createLegend_a = (title, rows, sep=' - ') => {
     /*  title: text string
         rows: array of row objects {color: '#b30000', low: '0', high: '1,000'}
         sep:  seperator, text string
@@ -136,4 +136,26 @@ let createLegend_a = (title, rows, sep=' - ') => {
 
     // return heading + rowsAll;
     return heading + rowsAll;
+}
+
+
+// let col3legend = createLegend_a('Females, 18 Years And Older, Population Density',
+// [   {color: ws.CONFIG.COLORS.BIN_1, low: '0', high: '2,000'},
+//     {color: ws.CONFIG.COLORS.BIN_2, low: '2,000', high: '4,000'},
+//     {color: ws.CONFIG.COLORS.BIN_3, low: '4,000', high: '6,000'},
+//     {color: ws.CONFIG.COLORS.BIN_4, low: '6,000', high: '8,000'},
+//     {color: ws.CONFIG.COLORS.BIN_5, low: '8,000', high: 'more'},
+// ]
+// )
+
+ws.legends.createChloroLegend = (title, style) => {
+    if (style==='default') {
+        return ws.legends.createLegend_a(title,
+            [   {color: ws.CONFIG.COLORS.BIN_1, low: '0', high: '2,000'},
+            {color: ws.CONFIG.COLORS.BIN_2, low: '2,000', high: '4,000'},
+            {color: ws.CONFIG.COLORS.BIN_3, low: '4,000', high: '6,000'},
+            {color: ws.CONFIG.COLORS.BIN_4, low: '6,000', high: '8,000'},
+            {color: ws.CONFIG.COLORS.BIN_5, low: '8,000', high: 'more'}]
+        )
+    }
 }

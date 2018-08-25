@@ -73,21 +73,22 @@ ws.btnGetDataClicked = (event) => {
     let addLayerPromise = (layerDtl) => {
         return new Promise( (resolve, reject) => {
             if (layerDtl.fileType==='zip') {
-                ws.getZipFile(layerDtl.rsrcId)
-                .then(jsonData => {
+                ws.promises.zipFileToJson(layerDtl.rsrcId)
+                .then(jsonObj => {
                     if (layerDtl.fileFormat==='topojson') {
-                        ws.addTopoJsonLayer(jsonData, layerDtl);
-                        return resolve('success')
+                        ws.addTopoJsonLayer(jsonObj, layerDtl);
+                        return resolve('ok')
                         }
-                    })
+                    else if (layerDtl.fileFormat==='geojson') {
+                        ws.addGeoJsonLayer(jsonObj, layerDtl);
+                        return resolve('ok')
+                    }
+                })
                 .catch(error => {
-                    // zip file download has failed
-                    gk = error;
-                    console.log('zip file download has failed');
-                    return reject('fail')
+                    // put out some message ???
+                    return reject(error);
                 })
             }
-    
         }
     
     )} 

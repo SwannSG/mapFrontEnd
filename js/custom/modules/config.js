@@ -100,3 +100,8 @@ ws.customControls = [];
 // ws.layer.name 
 ws.layers = {};
 // end keep a reference to a layer placed on the map
+
+// functionality associated with map Legends
+ws.legends = {};
+ws.legends.onMap = {};
+// end functionality associated with map Legends

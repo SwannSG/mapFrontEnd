@@ -26,6 +26,14 @@ ws.OLDsheltersLayer = (layer) => {
 }
 // end NOT USED
 
+ws.layers.pointToLayerStyle = (styleDescr) => {
+    let styleObj = ws.CONFIG.POINTS[styleDescr]
+    styleObj.radius = ws.map.getZoom()*styleObj.radius
+    return styleObj
+}
+
+
+
 // create and add shelters layer
 ws.sheltersLayer = (layer) => {
     layerObj = L.geoJSON(layer, {
@@ -49,6 +57,12 @@ ws.sheltersLayer = (layer) => {
 }
 // end 
 
+// NEW 
+
+
+
+
+
 
 // create and add wardLayer from geoJson data
 ws.wardLayerGeoJson = (layer) => {
@@ -61,53 +75,63 @@ ws.wardLayerGeoJson = (layer) => {
     layer.addTo(ws.map);
 }
 
-ws.addTopoJsonLayer = (data, layerDtl) => {
-    // data: topoJSON
-    console.log('layerDtl', layerDtl);
-    let key = Object.keys(data.objects)[0]
-    let geojson = topojson.feature(data, data.objects[key]);
-    layer = L.geoJSON(geojson, {style: ws.styleFeature})
-    ws.nameLayer(layer, layerDtl.rsrcId)
-    ws.layers[layerDtl.rsrcId] = layer;
-    layer.addTo(ws.map);
-}
+// ws.addTopoJsonLayer = (data, layerDtl) => {
+//     // data: topoJSON
+//     console.log('layerDtl', layerDtl);
+//     let key = Object.keys(data.objects)[0]
+//     let geojson = topojson.feature(data, data.objects[key]);
+//     layer = L.geoJSON(geojson, {style: ws.styleFeature})
+//     ws.nameLayer(layer, layerDtl.rsrcId)
+//     ws.layers[layerDtl.rsrcId] = layer;
+//     layer.addTo(ws.map);
+// }
 
 // NEW
-ws.addTopoJsonLayer = (data, layerDtl) => {
-    // data: topoJson
-    let addLegendFlag = false;
-    let key = Object.keys(data.objects)[0]
-    let geojson = topojson.feature(data, data.objects[key]);
+ws.layers.addLayer = (data, layerDtl) => {
+    // data: topoJson, geojson
+    console.log('addTopoJsonLayer')
+    let addLegendFlag = false, geojsonData, layer, legendHTML, legendKey, styleObj;
+    if (layerDtl.fileFormat==='topojson') {    
+        let key = Object.keys(data.objects)[0]
+        geojsonData = topojson.feature(data, data.objects[key]);
+    }
+    else {
+        geojsonData = data;
+    }
     if (layerDtl.layerType==='chloropleth') {
+        // chloropleth layer styles
         if (layerDtl.layerStyle==='default') {
             // map area
-            let styleObj = {style: ws.styleFeature};
+            styleObj = {style: ws.layers.styleFeature};
             // legend "area"
-            let legendKey = layerDtl.layerType + '-' + layerDtl.layerStyle 
-            if (!ws.legends.onMap.hasOwnProperty(legendKey)) {
-                let legend = ws.legends.createChloroLegend(layerDtl.legendTitle, layerDtl.layerStyle);
-                addLegendFlag = true;
+            legendKey = layerDtl.layerType + '-' + layerDtl.layerStyle 
+            if (!ws.legends.currentHtml.hasOwnProperty(legendKey)) {
+                ws.legends.currentHtml[legendKey] = ws.legends.createChloroLegend(layerDtl.legendTitle, layerDtl.layerStyle);
             }
         }
-        
         // create layer
-        console.log('styleObj', styleObj);
-
-        layer = L.geoJSON(geojson, styleObj);
-        gt = layer;
-        layer.addTo(ws.map);
-        // track layers added to map
-        ws.layers[layerDtl.rsrcId] = layer;
-        // add legend to map
-        if (addLegendFlag) {
-            ws.legends.onMap[legendKey] = ws.legends.createLegend('bottomright', [col2legend]);
-        }
+        layer = L.geoJSON(geojsonData, styleObj );
     }
+    else if (layerDtl.layerType==='point') {
+        let styleObj = ws.layers.pointToLayerStyle(layerDtl.layerStyle);
+        layer = L.geoJSON(geojsonData, {
+            pointToLayer: function(feature, latlng) {
+                return L.circleMarker(latlng, styleObj)
+                    .bindPopup(feature.properties.name);
+            }
+        })
+    }
+    layer.addTo(ws.map);
+    // track layers added to map
+    ws.layers.mapLayer[layerDtl.rsrcId] = layer;
 }
+
+
+
 
 
 // used to style ward areas with fill color based on female population size
-ws.styleFeature = (feature) => {
+ws.layers.styleFeature = (feature) => {
 
     let getFillColor = (n) => {
         // n --> no of woman in ward

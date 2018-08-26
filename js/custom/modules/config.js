@@ -8,6 +8,10 @@ ws.CONFIG = {
         BIN_4: '#e34a33',
         BIN_5: '#b30000'
     },
+    POINTS: {
+        a: {radius: 0.8, fillColor: 'yellow', fillOpacity: 1, color: 'black', weight: 1},
+        b: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yello', weight: 1}
+    },
     MAP_INITIAL: {latlng: [-28.58, 24.52], zoom: 6},
     'ALL': {
         center: [-32.2977935398105, 26.66272775514364],
@@ -99,9 +103,11 @@ ws.customControls = [];
 // keep a reference to a layer placed on the map
 // ws.layer.name 
 ws.layers = {};
+ws.layers.mapLayer = {}
 // end keep a reference to a layer placed on the map
 
 // functionality associated with map Legends
 ws.legends = {};
-ws.legends.onMap = {};
+ws.legends.currentHtml = {};
+ws.legends.mapHtml = {};
 // end functionality associated with map Legends

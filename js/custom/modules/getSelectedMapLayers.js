@@ -30,15 +30,15 @@ ws.btnGetDataClicked = (event) => {
     ws.btnGetDataClicked.off = turnSpinnerOff;
  
 
-     let checkIfRsrcExists = (rsrcId) => {
-        return new Promise( (resolve, reject) => {
-            fetch(rsrcId, {method: 'HEAD', cache: 'no-cache'})
-            .then(x => {
-                resolve(x.ok);
-            })
-            .catch(err => {reject(err)})
-            }
-        )}
+    //  let checkIfRsrcExists = (rsrcId) => {
+    //     return new Promise( (resolve, reject) => {
+    //         fetch(rsrcId, {method: 'HEAD', cache: 'no-cache'})
+    //         .then(x => {
+    //             resolve(x.ok);
+    //         })
+    //         .catch(err => {reject(err)})
+    //         }
+    //     )}
     
     let readUIselectorValues = () => {
         let layersToFetch = [];
@@ -75,14 +75,17 @@ ws.btnGetDataClicked = (event) => {
             if (layerDtl.fileType==='zip') {
                 ws.promises.zipFileToJson(layerDtl.rsrcId)
                 .then(jsonObj => {
-                    if (layerDtl.fileFormat==='topojson') {
-                        ws.addTopoJsonLayer(jsonObj, layerDtl);
-                        return resolve('ok')
-                        }
-                    else if (layerDtl.fileFormat==='geojson') {
-                        ws.addGeoJsonLayer(jsonObj, layerDtl);
-                        return resolve('ok')
-                    }
+                    ws.layers.addLayer(jsonObj, layerDtl);
+                })
+                .catch(error => {
+                    // put out some message ???
+                    return reject(error);
+                })
+            }
+            else {
+                ws.promises.fileToJson(layerDtl.rsrcId)
+                .then(jsonObj => {
+                    ws.layers.addLayer(jsonObj, layerDtl);
                 })
                 .catch(error => {
                     // put out some message ???
@@ -90,14 +93,13 @@ ws.btnGetDataClicked = (event) => {
                 })
             }
         }
-    
     )} 
 
 
     let addLayersPromises = [];
     for (let layerDtl of layersToFetch) {
         // is layerDtl already on map ?
-        if (!ws.layers.hasOwnProperty(layerDtl.rsrcId)) {         
+        if (!ws.layers.mapLayer.hasOwnProperty(layerDtl.rsrcId) & layerDtl.rsrcId!='None') {         
             // get the resource and add promise
             addLayersPromises.push(addLayerPromise(layerDtl))
         }

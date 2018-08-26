@@ -60,6 +60,19 @@ ws.promises.parseJson = (jsonString) => {
     })
 }
 
+ws.promises.jsonRsp = (rspFromServer) => {
+    // resolveValue: jsonObj
+    return new Promise((resolve, reject) => {
+        try {
+            rspFromServer.json()
+            .then(resolve)
+        }
+        catch(error) {
+            reject({error: error});
+        }
+    })
+}
+
 // composite promises
 ws.promises.zipFileToJson = (rsrcId) => {
     return new Promise((resolve, reject) => {
@@ -72,3 +85,11 @@ ws.promises.zipFileToJson = (rsrcId) => {
     })
 }
 
+ws.promises.fileToJson = (rsrcId) => {
+    return new Promise((resolve, reject) => {
+        ws.promises.getFile(rsrcId)
+        .then(ws.promises.jsonRsp)
+        .then(resolve)
+        .catch(reject);
+    })
+}

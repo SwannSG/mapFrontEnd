@@ -9,8 +9,15 @@ ws.CONFIG = {
         BIN_5: '#b30000'
     },
     POINTS: {
-        a: {radius: 0.8, fillColor: 'yellow', fillOpacity: 1, color: 'black', weight: 1},
-        b: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yello', weight: 1}
+        a: {0: {radius: 0.8, fillColor: 'yellow', fillOpacity: 1, color: 'black', weight: 1},
+            1: {radius: 0.8, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1},
+            2: {radius: 0.8, fillColor: 'gray', fillOpacity: 1, color: 'pink', weight: 1}},
+        b: {0: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1},
+            1: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1},
+            2: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1}},
+        b: {0: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1},
+            1: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1},
+            2: {radius: 0.6, fillColor: 'black', fillOpacity: 1, color: 'yellow', weight: 1}},
     },
     MAP_INITIAL: {latlng: [-28.58, 24.52], zoom: 6},
     'ALL': {
@@ -108,6 +115,5 @@ ws.layers.mapLayer = {}
 
 // functionality associated with map Legends
 ws.legends = {};
-ws.legends.currentHtml = {};
-ws.legends.mapHtml = {};
+ws.legends.references = {}  // legend references on map
 // end functionality associated with map Legends

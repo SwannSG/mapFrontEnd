@@ -22,11 +22,20 @@ ws.DOMContentLoaded = () => {
         }).addTo(ws.map);
     }
     
-    let resizeShelterMarkerOnZoom = () => {
-        if (ws.layers.shelters) {
-            //layerShelters object exists, apply different styling
-            ws.layers.shelters.setStyle({radius: ws.map.getZoom()*0.8});
+    let resizePoints = () => {
+        for (let item in ws.layers.mapLayer) {
+            if (ws.layers.mapLayer[item].layerType==='point') {
+                console.log('zoom', ws.map.getZoom());
+                ws.layers.mapLayer[item].layer.setStyle({radius: ws.map.getZoom()*ws.layers.mapLayer[item].radius});
+            }
         }
+
+
+        // if (ws.layers.shelters) {
+        //     //layerShelters object exists, apply different styling
+        //     ws.layers.shelters.setStyle({radius: ws.map.getZoom()*0.8});
+
+        // }
     }
 
     createMap()
@@ -36,7 +45,7 @@ ws.DOMContentLoaded = () => {
         console.log('layeradd', e.layer.name)
     })
 
-    ws.map.addEventListener('zoomend', resizeShelterMarkerOnZoom);
+    ws.map.addEventListener('zoomend', resizePoints);
 
     ws.map.addEventListener('layeradd', (event) => {
         if (event.layer.name==='wards') {

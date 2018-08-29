@@ -26,10 +26,10 @@ ws.OLDsheltersLayer = (layer) => {
 }
 // end NOT USED
 
-ws.layers.pointToLayerStyle = (styleDescr) => {
-    let styleObj = ws.CONFIG.POINTS[styleDescr]
-    styleObj.radius = ws.map.getZoom()*styleObj.radius
-    return styleObj
+ws.layers.pointToLayerStyle = (styleObj) => {
+    let localStyleObj = Object.create(styleObj);
+    localStyleObj.radius = ws.map.getZoom()*localStyleObj.radius
+    return localStyleObj
 }
 
 
@@ -75,22 +75,11 @@ ws.wardLayerGeoJson = (layer) => {
     layer.addTo(ws.map);
 }
 
-// ws.addTopoJsonLayer = (data, layerDtl) => {
-//     // data: topoJSON
-//     console.log('layerDtl', layerDtl);
-//     let key = Object.keys(data.objects)[0]
-//     let geojson = topojson.feature(data, data.objects[key]);
-//     layer = L.geoJSON(geojson, {style: ws.styleFeature})
-//     ws.nameLayer(layer, layerDtl.rsrcId)
-//     ws.layers[layerDtl.rsrcId] = layer;
-//     layer.addTo(ws.map);
-// }
-
-// NEW
 ws.layers.addLayer = (data, layerDtl) => {
     // data: topoJson, geojson
     console.log('addTopoJsonLayer')
-    let addLegendFlag = false, geojsonData, layer, legendHTML, legendKey, styleObj;
+    
+    let geojsonData, layer, styleObj;
     if (layerDtl.fileFormat==='topojson') {    
         let key = Object.keys(data.objects)[0]
         geojsonData = topojson.feature(data, data.objects[key]);
@@ -98,22 +87,20 @@ ws.layers.addLayer = (data, layerDtl) => {
     else {
         geojsonData = data;
     }
+
+
     if (layerDtl.layerType==='chloropleth') {
         // chloropleth layer styles
         if (layerDtl.layerStyle==='default') {
             // map area
             styleObj = {style: ws.layers.styleFeature};
-            // legend "area"
-            legendKey = layerDtl.layerType + '-' + layerDtl.layerStyle 
-            if (!ws.legends.currentHtml.hasOwnProperty(legendKey)) {
-                ws.legends.currentHtml[legendKey] = ws.legends.createChloroLegend(layerDtl.legendTitle, layerDtl.layerStyle);
-            }
         }
         // create layer
         layer = L.geoJSON(geojsonData, styleObj );
     }
+
     else if (layerDtl.layerType==='point') {
-        let styleObj = ws.layers.pointToLayerStyle(layerDtl.layerStyle);
+        let styleObj = ws.layers.pointToLayerStyle(layerDtl.pointLayerStyle);
         layer = L.geoJSON(geojsonData, {
             pointToLayer: function(feature, latlng) {
                 return L.circleMarker(latlng, styleObj)
@@ -121,14 +108,13 @@ ws.layers.addLayer = (data, layerDtl) => {
             }
         })
     }
+
     layer.addTo(ws.map);
     // track layers added to map
-    ws.layers.mapLayer[layerDtl.rsrcId] = layer;
+    ws.layers.mapLayer[layerDtl.rsrcId] = {layer: layer,
+         layerType: layerDtl.layerType,
+         radius: layerDtl.pointLayerStyle ? layerDtl.pointLayerStyle.radius : 'none'};
 }
-
-
-
-
 
 // used to style ward areas with fill color based on female population size
 ws.layers.styleFeature = (feature) => {
@@ -151,3 +137,5 @@ ws.layers.styleFeature = (feature) => {
         color: 'black',
     }
 }
+
+

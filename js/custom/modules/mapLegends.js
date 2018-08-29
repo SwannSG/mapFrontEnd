@@ -1,9 +1,10 @@
-ws.legends.createLegend = (pos, html) => {
-    /*  pos: string
+ws.legends.createLegend = (posistion, html) => {
+    /*  posistion: <string>
         html: array of html stings
-
+        legend: reference to legend on map
+                to later remove reference ws.map.removeControl(legend)
     */
-    let legend = L.control({position: pos});
+    let legend = L.control({position: posistion});
     let el = L.DomUtil.create('div', 'legend');
 
     legend.onAdd = function (map) {
@@ -73,9 +74,9 @@ let createLegend_b = (title, rows) => {
 //  title
 //  circle     label
 //  circle     label
-let createLegend_c = (title, rows) => {
+ws.legends.createLegend_c = (title, rows) => {
     /*  rows: array of row objects
-        row:{label: string}
+        row:{label: string, backgroundColor: string, borderColor: string}
         returns html string
     */
 
@@ -85,8 +86,11 @@ let createLegend_c = (title, rows) => {
     let rowsHtml = [];
     for (let each of rows) {
         let each_row =  `<div class="legend-c__row">
-                            <div class=legend-c__swatch>
-                                <div class=legend-c__swatch-circle></div>
+                            <div class="legend-c__swatch">
+                                <div class="legend-c__swatch-circle"
+                                style="background-color:${each.backgroundColor};
+                                border:2px solid ${each.borderColor};"
+                                ></div>
                             </div>
                             <div class="legend-c__label">${each.label}</div>
                         </div>`;
@@ -102,6 +106,7 @@ let createLegend_c = (title, rows) => {
     return `<div class="legend-c">` + heading + rowsAll + `</div>`
 }
 // end
+
 
 
 // legend(_c) of the form 
@@ -159,3 +164,43 @@ ws.legends.createChloroLegend = (title, style) => {
         )
     }
 }
+
+
+ws.legends.createLegendFromUIselection = (selectedLegends) => {
+    // selectedLegends: [layerDtl, layerDtl, ...]
+    let points = {};
+    let chloropleths = {};
+    let pointLegendCount = -1;
+    for (let each of selectedLegends) {
+        if (each.layerType==='point') {
+            rowObj = {label:'', backgroundColor: '', borderColor: ''};
+            rowObj.label = each.legendTitle;
+            if (points.hasOwnProperty(each.selectedOption)) {
+                [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle);
+                points[each.selectedOption].rows.push(rowObj)
+            }
+            else {
+                pointLegendCount = pointLegendCount + 1;
+                [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle); 
+                points[each.selectedOption] = {title: each.selectedOption, rows: [rowObj]};
+
+            }
+        }
+        else if (each.layerType==='chloropleth') {
+            chloropleths[each.legendTitle] = {title: each.legendTitle, style: each.layerStyle}
+        }
+    }
+
+    console.log(points);
+
+    let pointsHTML = []
+    for (each in points) {
+        pointsHTML.push(ws.legends.createLegend_c(each, points[each].rows));
+    }
+    ws.legends.createLegend('bottomright', pointsHTML)
+}
+
+ws.legends.getPointColor = (pointLegendCount, layerStyle) => {
+        return [ws.CONFIG.POINTS[layerStyle][pointLegendCount].fillColor, ws.CONFIG.POINTS[layerStyle][pointLegendCount].color] 
+}
+

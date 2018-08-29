@@ -1,0 +1,28 @@
+MODIFY ws.layers.pointToLayerStyle for new config.js point settings 
+
+
+fileFormat
+:
+"topojson"
+fileType
+:
+"zip"
+layerStyle
+:
+"default"
+layerType
+:
+"chloropleth"
+legendTitle
+:
+"Northen Cape, females 18 years and older, population density"
+onMap
+:
+true
+rsrcId
+:
+"data/NCmerged.topojson.zip"
+selectedOption
+:
+"Northern Cape"
+

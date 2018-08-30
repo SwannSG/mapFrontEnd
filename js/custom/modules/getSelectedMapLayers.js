@@ -23,10 +23,7 @@ ws.btnGetDataClicked = (event) => {
         "display: none;");
     }
 
-
-    ws.btnGetDataClicked.on = turnSpinnerOn;
-    ws.btnGetDataClicked.off = turnSpinnerOff;
- 
+    turnSpinnerOn();
 
     //  let checkIfRsrcExists = (rsrcId) => {
     //     return new Promise( (resolve, reject) => {
@@ -79,12 +76,13 @@ ws.btnGetDataClicked = (event) => {
         for (let each of layersToFetch) {
             
             if (each.layerType==='point') {
-                if (temp.hasOwnProperty(each.rsrcId)) {
-                    each.pointLayerStyle = WS.CONFIG.POINTS[each.layerStyle][temp[each.rsrcId]];
+                if (temp.hasOwnProperty(each.selectedOption)) {
+                    each.pointLayerStyle = ws.CONFIG.POINTS[each.layerStyle][temp[each.selectedOption].count];
                 }
                 else {
-                    temp[each.rsrcId] = count;
-                    each.pointLayerStyle = ws.CONFIG.POINTS[each.layerStyle][temp[each.rsrcId]]; 
+                    temp[each.selectedOption] = {}
+                    temp[each.selectedOption].count = count;
+                    each.pointLayerStyle = ws.CONFIG.POINTS[each.layerStyle][temp[each.selectedOption].count]; 
                     count = count + 1
                 }
             }
@@ -132,6 +130,7 @@ ws.btnGetDataClicked = (event) => {
                 ws.promises.zipFileToJson(layerDtl.rsrcId)
                 .then(jsonObj => {
                     ws.layers.addLayer(jsonObj, layerDtl);
+                    return resolve('done');
                 })
                 .catch(error => {
                     // put out some message ???
@@ -141,8 +140,8 @@ ws.btnGetDataClicked = (event) => {
             else {
                 ws.promises.fileToJson(layerDtl.rsrcId)
                 .then(jsonObj => {
-                    console.log(jsonObj);
                     ws.layers.addLayer(jsonObj, layerDtl);
+                    return resolve('done');
                 })
                 .catch(error => {
                     // put out some message ???
@@ -211,8 +210,6 @@ ws.btnGetDataClicked = (event) => {
     // create legend
     makeLegend(layersToFetch);
 
-    gt = layersToFetch;
-
     let addLayersPromises = [];
     for (let layerDtl of layersToFetch) {
         if (layerDtl.onMap) {
@@ -223,6 +220,19 @@ ws.btnGetDataClicked = (event) => {
             addLayersPromises.push(addLayerPromise(layerDtl))
         }
     }
+
+    gt = addLayersPromises
+    Promise.all(addLayersPromises)
+    .then(() => {
+        for (let item in ws.layers.mapLayer) {
+            if (ws.layers.mapLayer[item].layerType==='point') {
+                ws.layers.mapLayer[item].layer.bringToFront();
+            }
+        }
+        turnSpinnerOff();
+    })
+    .catch((error) => console.log(error));
+
 
 }
 

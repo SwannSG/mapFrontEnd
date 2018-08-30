@@ -114,6 +114,7 @@ ws.layers.addLayer = (data, layerDtl) => {
     ws.layers.mapLayer[layerDtl.rsrcId] = {layer: layer,
          layerType: layerDtl.layerType,
          radius: layerDtl.pointLayerStyle ? layerDtl.pointLayerStyle.radius : 'none'};
+
 }
 
 // used to style ward areas with fill color based on female population size

@@ -166,41 +166,41 @@ ws.legends.createChloroLegend = (title, style) => {
 }
 
 
-ws.legends.createLegendFromUIselection = (selectedLegends) => {
-    // selectedLegends: [layerDtl, layerDtl, ...]
-    let points = {};
-    let chloropleths = {};
-    let pointLegendCount = -1;
-    for (let each of selectedLegends) {
-        if (each.layerType==='point') {
-            rowObj = {label:'', backgroundColor: '', borderColor: ''};
-            rowObj.label = each.legendTitle;
-            if (points.hasOwnProperty(each.selectedOption)) {
-                [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle);
-                points[each.selectedOption].rows.push(rowObj)
-            }
-            else {
-                pointLegendCount = pointLegendCount + 1;
-                [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle); 
-                points[each.selectedOption] = {title: each.selectedOption, rows: [rowObj]};
+// ws.legends.createLegendFromUIselection = (selectedLegends) => {
+//     // selectedLegends: [layerDtl, layerDtl, ...]
+//     let points = {};
+//     let chloropleths = {};
+//     let pointLegendCount = -1;
+//     for (let each of selectedLegends) {
+//         if (each.layerType==='point') {
+//             rowObj = {label:'', backgroundColor: '', borderColor: ''};
+//             rowObj.label = each.legendTitle;
+//             if (points.hasOwnProperty(each.selectedOption)) {
+//                 [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle);
+//                 points[each.selectedOption].rows.push(rowObj)
+//             }
+//             else {
+//                 pointLegendCount = pointLegendCount + 1;
+//                 [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle); 
+//                 points[each.selectedOption] = {title: each.selectedOption, rows: [rowObj]};
 
-            }
-        }
-        else if (each.layerType==='chloropleth') {
-            chloropleths[each.legendTitle] = {title: each.legendTitle, style: each.layerStyle}
-        }
-    }
+//             }
+//         }
+//         else if (each.layerType==='chloropleth') {
+//             chloropleths[each.legendTitle] = {title: each.legendTitle, style: each.layerStyle}
+//         }
+//     }
 
-    console.log(points);
+//     console.log(points);
 
-    let pointsHTML = []
-    for (each in points) {
-        pointsHTML.push(ws.legends.createLegend_c(each, points[each].rows));
-    }
-    ws.legends.createLegend('bottomright', pointsHTML)
-}
+//     let pointsHTML = []
+//     for (each in points) {
+//         pointsHTML.push(ws.legends.createLegend_c(each, points[each].rows));
+//     }
+//     ws.legends.createLegend('bottomright', pointsHTML)
+// }
 
-ws.legends.getPointColor = (pointLegendCount, layerStyle) => {
-        return [ws.CONFIG.POINTS[layerStyle][pointLegendCount].fillColor, ws.CONFIG.POINTS[layerStyle][pointLegendCount].color] 
-}
+// ws.legends.getPointColor = (pointLegendCount, layerStyle) => {
+//         return [ws.CONFIG.POINTS[layerStyle][pointLegendCount].fillColor, ws.CONFIG.POINTS[layerStyle][pointLegendCount].color] 
+// }
 

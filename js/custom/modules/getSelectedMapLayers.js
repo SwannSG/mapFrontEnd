@@ -1,9 +1,5 @@
 ws.btnGetDataClicked = (event) => {
 
-    /*
-        check if resource exists on server.
-        return promise, resolves to true|false
-    */
     if (window.getComputedStyle(document.getElementsByClassName('user-select')[0]).display==='none') {
         // do nothing
         return;
@@ -106,6 +102,7 @@ ws.btnGetDataClicked = (event) => {
             if (ws.layers.mapLayer[rsrcId].layerType==='point') {
                 // always remove point layers
                 ws.map.removeLayer(ws.layers.mapLayer[rsrcId].layer);
+                delete ws.layers.mapLayer[rsrcId];
             }
             else if (ws.layers.mapLayer[rsrcId].layerType==='chloropleth') {
                 if (lookup[rsrcId]) {
@@ -130,7 +127,7 @@ ws.btnGetDataClicked = (event) => {
                 ws.promises.zipFileToJson(layerDtl.rsrcId)
                 .then(jsonObj => {
                     ws.layers.addLayer(jsonObj, layerDtl);
-                    return resolve('done');
+                    return resolve({layerDtl: layerDtl, state:'done'});
                 })
                 .catch(error => {
                     // put out some message ???
@@ -141,7 +138,7 @@ ws.btnGetDataClicked = (event) => {
                 ws.promises.fileToJson(layerDtl.rsrcId)
                 .then(jsonObj => {
                     ws.layers.addLayer(jsonObj, layerDtl);
-                    return resolve('done');
+                    return resolve({layerDtl: layerDtl, state:'done'});
                 })
                 .catch(error => {
                     // put out some message ???
@@ -200,9 +197,10 @@ ws.btnGetDataClicked = (event) => {
     }
 
 
-
     // read UI
     let layersToFetch = readUIselectorValues();
+    gt = layersToFetch;
+
 
     // remove some layers from existing map
     removeLayers(layersToFetch);
@@ -211,6 +209,7 @@ ws.btnGetDataClicked = (event) => {
     makeLegend(layersToFetch);
 
     let addLayersPromises = [];
+    gp = addLayersPromises;
     for (let layerDtl of layersToFetch) {
         if (layerDtl.onMap) {
             // layer already on map. Do nothing.
@@ -221,12 +220,17 @@ ws.btnGetDataClicked = (event) => {
         }
     }
 
-    gt = addLayersPromises
     Promise.all(addLayersPromises)
     .then(() => {
         for (let item in ws.layers.mapLayer) {
             if (ws.layers.mapLayer[item].layerType==='point') {
-                ws.layers.mapLayer[item].layer.bringToFront();
+                try {
+                    ws.layers.mapLayer[item].layer.bringToFront();
+                }
+                catch(error) {
+                    console.log(error);
+                    // just carry on
+                }
             }
         }
         turnSpinnerOff();

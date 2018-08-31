@@ -25,7 +25,6 @@ ws.DOMContentLoaded = () => {
     let resizePoints = () => {
         for (let item in ws.layers.mapLayer) {
             if (ws.layers.mapLayer[item].layerType==='point') {
-                console.log('zoom', ws.map.getZoom());
                 ws.layers.mapLayer[item].layer.setStyle({radius: ws.map.getZoom()*ws.layers.mapLayer[item].radius});
             }
         }
@@ -41,9 +40,9 @@ ws.DOMContentLoaded = () => {
     createMap()
  
     // map event handlers
-    ws.map.addEventListener('layeradd', (e) => {
-        console.log('layeradd', e.layer.name)
-    })
+    // ws.map.addEventListener('layeradd', (e) => {
+    //     console.log('layeradd', e.layer.name)
+    // })
 
     ws.map.addEventListener('zoomend', resizePoints);
 

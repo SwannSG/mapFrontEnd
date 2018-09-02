@@ -68,62 +68,6 @@ ws.getJsonZipFile = (layerDtl) => {
     })
 }
 
-
-
-
-
-
-
-// ws.getJsonZipFile = (layerDtl, eventName='gotZipFileOk') => {
-
-//     console.log('get zip file', layerDtl);
-
-//     let jsZip = new JSZip();
-
-//     fetch(layerDtl.rsrcId)
-//     .then(x =>  {if (x.ok) {
-//         // x: Response (from server)
-//         return x;
-//     }
-//     else {
-//         let errorText = `Error downloading <span>${layerDtl.rsrcId}</span>. (${x.statusText} ${x.status})`; 
-//         ws.errorMsg(errorText);
-//     } 
-//     })
-//     .then(x => {
-//         // x.arrayBuffer: raw data of the zip file
-//         return jsZip.loadAsync(x.arrayBuffer())
-//     })
-//     .then(x => {
-//         // x: jsZip data structure
-//         //      x.files = {<filename_1>:{} , <filename_2>:{}, ...}
-//         //          we only have one filename which we get from Object.keys(x.files)[0] 
-//         //      originalFileData (as string) = x.file(<filename>).async('string')
-//         return x.file(Object.keys(x.files)[0]).async('string')
-//     })
-//     .then(x => {
-//         // x: string representation of original JSON, which needs to be parsed 
-//         return JSON.parse(x);
-//     })
-//     .then(x => {
-//         document.body.dispatchEvent(new CustomEvent(
-//             eventName,
-//             {detail: {
-//                 layerDtl: layerDtl,
-//                 data: x
-//                 }
-//             }));
-//     })
-//     .catch(err => {
-//         console.log(err);
-//         let errorText = `Error downloading <span>${layerDtl.rsrcId}</span>.`; 
-//         ws.errorMsg(errorText);
-//     })
-// }
-
-
-
-
 ws.getJsonRsrc  = (rsrcId, rsrcName='', eventName='gotJsonRsrcOk') => {
     /*
     download json file, generate event when successfully downloaded
@@ -174,8 +118,6 @@ ws.gotJsonRsrcOk = (event) => {
 }
 
 ws.gotZipFileOk = (event) => {
-    // ???????? turn spinner off
-    // document.getElementsByClassName('user-select__get-data-spinner')[0].removeAttribute('style')
     if (event.detail.rsrcName === 'topojson') {
         ws.layerTopoJson(event.detail.data,
                              event.detail.rsrcId);

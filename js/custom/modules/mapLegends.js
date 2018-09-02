@@ -143,16 +143,6 @@ ws.legends.createLegend_a = (title, rows, sep=' - ') => {
     return heading + rowsAll;
 }
 
-
-// let col3legend = createLegend_a('Females, 18 Years And Older, Population Density',
-// [   {color: ws.CONFIG.COLORS.BIN_1, low: '0', high: '2,000'},
-//     {color: ws.CONFIG.COLORS.BIN_2, low: '2,000', high: '4,000'},
-//     {color: ws.CONFIG.COLORS.BIN_3, low: '4,000', high: '6,000'},
-//     {color: ws.CONFIG.COLORS.BIN_4, low: '6,000', high: '8,000'},
-//     {color: ws.CONFIG.COLORS.BIN_5, low: '8,000', high: 'more'},
-// ]
-// )
-
 ws.legends.createChloroLegend = (title, style) => {
     if (style==='default') {
         return ws.legends.createLegend_a(title,
@@ -164,43 +154,4 @@ ws.legends.createChloroLegend = (title, style) => {
         )
     }
 }
-
-
-// ws.legends.createLegendFromUIselection = (selectedLegends) => {
-//     // selectedLegends: [layerDtl, layerDtl, ...]
-//     let points = {};
-//     let chloropleths = {};
-//     let pointLegendCount = -1;
-//     for (let each of selectedLegends) {
-//         if (each.layerType==='point') {
-//             rowObj = {label:'', backgroundColor: '', borderColor: ''};
-//             rowObj.label = each.legendTitle;
-//             if (points.hasOwnProperty(each.selectedOption)) {
-//                 [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle);
-//                 points[each.selectedOption].rows.push(rowObj)
-//             }
-//             else {
-//                 pointLegendCount = pointLegendCount + 1;
-//                 [rowObj.backgroundColor, rowObj.borderColor] = ws.legends.getPointColor(pointLegendCount, each.layerStyle); 
-//                 points[each.selectedOption] = {title: each.selectedOption, rows: [rowObj]};
-
-//             }
-//         }
-//         else if (each.layerType==='chloropleth') {
-//             chloropleths[each.legendTitle] = {title: each.legendTitle, style: each.layerStyle}
-//         }
-//     }
-
-//     console.log(points);
-
-//     let pointsHTML = []
-//     for (each in points) {
-//         pointsHTML.push(ws.legends.createLegend_c(each, points[each].rows));
-//     }
-//     ws.legends.createLegend('bottomright', pointsHTML)
-// }
-
-// ws.legends.getPointColor = (pointLegendCount, layerStyle) => {
-//         return [ws.CONFIG.POINTS[layerStyle][pointLegendCount].fillColor, ws.CONFIG.POINTS[layerStyle][pointLegendCount].color] 
-// }
 

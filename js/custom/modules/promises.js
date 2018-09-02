@@ -74,22 +74,50 @@ ws.promises.jsonRsp = (rspFromServer) => {
 }
 
 // composite promises
+// ws.promises.zipFileToJson = (rsrcId) => {
+//     return new Promise((resolve, reject) => {
+//         ws.promises.getFile(rsrcId)
+//         .then(ws.promises.arrayBuff)
+//         .then(ws.promises.decodeZippedArrayBuff)
+//         .then(ws.promises.parseJson)
+//         .then(resolve)
+//         .catch(reject);
+//     })
+// }
+
 ws.promises.zipFileToJson = (rsrcId) => {
-    return new Promise((resolve, reject) => {
-        ws.promises.getFile(rsrcId)
-        .then(ws.promises.arrayBuff)
-        .then(ws.promises.decodeZippedArrayBuff)
-        .then(ws.promises.parseJson)
-        .then(resolve)
-        .catch(reject);
+    return new Promise(async (resolve, reject) => {
+        try {
+            let rspFromServer = await ws.promises.getFile(rsrcId);
+            let zipData = await ws.promises.arrayBuff(rspFromServer);
+            let jsonString = await ws.promises.decodeZippedArrayBuff(zipData);
+            let jsonObj = await ws.promises.parseJson(jsonString);
+            return resolve(jsonObj);
+        }
+        catch (error) {
+            return reject(error);
+        }
     })
 }
 
+// ws.promises.fileToJson = (rsrcId) => {
+//     return new Promise((resolve, reject) => {
+//         ws.promises.getFile(rsrcId)
+//         .then(ws.promises.jsonRsp)
+//         .then(resolve)
+//         .catch(reject);
+//     })
+// }
+
 ws.promises.fileToJson = (rsrcId) => {
-    return new Promise((resolve, reject) => {
-        ws.promises.getFile(rsrcId)
-        .then(ws.promises.jsonRsp)
-        .then(resolve)
-        .catch(reject);
+    return new Promise(async (resolve, reject) => {
+        try {
+            let rspFromServer = await ws.promises.getFile(rsrcId);
+            let jsonObj = await ws.promises.jsonRsp(rspFromServer);
+            return resolve(jsonObj);
+        }
+        catch (error) {
+            return reject(error);
+        }
     })
 }

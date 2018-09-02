@@ -9,8 +9,41 @@ ws.DOMContentLoaded = () => {
             ws.btnGetDataClicked(event);
         })
 
-    ws.getUIselectData();
+    ws.hamburgerClicked = (event) => {
+        let el = document.getElementsByClassName('user-select')[0];
+        if (el.getAttribute('style')==='display: none;') {
+            el.setAttribute('style', 'display: block;')
+        }
+        else {
+            el.setAttribute('style', 'display: none;')
+        } 
+    }
 
+    ws.toggleMapZoomControlDisplay = () => {
+        if (ws.map.zoomControl._map) {
+            ws.map.zoomControl.remove()
+        } else {ws.map.zoomControl.addTo(ws.map)}
+    }
+    
+    // executed when user clicks on "Map zoom toggle" button
+    document.getElementsByClassName('vertical-menu__magnifying-glass')[0].addEventListener('click', (event) => {
+        ws.toggleMapZoomControlDisplay()
+    })
+    
+    // get lat, lng in console
+    ws.onMapClick = (event) => {
+        console.log('Map clicked at: ',  event.latlng, 'zoom: ', ws.map.getZoom());
+    }
+    
+    if (ws.CONFIG.DELETE_LOCALSTORAGE) {
+        // clear local storage
+        ws.idb.clear()
+        .then(console.log('local storage cleared'))
+        .catch((error) => console.log('clear local storage', error)); 
+    }
+
+
+    ws.getUIselectData();
 
     let createMap = () => {
         ws.map = L.map('map').setView(ws.CONFIG.MAP_INITIAL.latlng, ws.CONFIG.MAP_INITIAL.zoom);
@@ -28,22 +61,10 @@ ws.DOMContentLoaded = () => {
                 ws.layers.mapLayer[item].layer.setStyle({radius: ws.map.getZoom()*ws.layers.mapLayer[item].radius});
             }
         }
-
-
-        // if (ws.layers.shelters) {
-        //     //layerShelters object exists, apply different styling
-        //     ws.layers.shelters.setStyle({radius: ws.map.getZoom()*0.8});
-
-        // }
     }
 
     createMap()
  
-    // map event handlers
-    // ws.map.addEventListener('layeradd', (e) => {
-    //     console.log('layeradd', e.layer.name)
-    // })
-
     ws.map.addEventListener('zoomend', resizePoints);
 
     ws.map.addEventListener('layeradd', (event) => {

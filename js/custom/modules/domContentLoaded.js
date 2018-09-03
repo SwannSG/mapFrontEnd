@@ -46,12 +46,23 @@ ws.DOMContentLoaded = () => {
     ws.getUIselectData();
 
     let createMap = () => {
+
+        // NEW
+        L.CRS.CustomZoom = L.extend({}, L.CRS.EPSG3857, {
+            scale: function (zoom) {
+                return 256 * Math.pow(1.5, zoom);
+            }
+        });
+
+        // NEW
+
         ws.map = L.map('map').setView(ws.CONFIG.MAP_INITIAL.latlng, ws.CONFIG.MAP_INITIAL.zoom);
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
             id: 'mapbox.streets',
-            accessToken: 'pk.eyJ1Ijoic3dhbm5zZyIsImEiOiJjamsweWEyczgwYjA5M3BvMjR2dDk0aTIwIn0.9I1LlFyhj77n1_Xgz__uTA'
+            accessToken: 'pk.eyJ1Ijoic3dhbm5zZyIsImEiOiJjamsweWEyczgwYjA5M3BvMjR2dDk0aTIwIn0.9I1LlFyhj77n1_Xgz__uTA',
+            // crs: L.CRS.CustomZoom
         }).addTo(ws.map);
     }
     

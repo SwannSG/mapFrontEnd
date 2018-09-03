@@ -9,9 +9,9 @@ ws.CONFIG = {
         BIN_5: '#b30000'
     },
     POINTS: {
-        a: {0: {radius: 0.5, fillColor: 'turquoise', fillOpacity: .5, color: 'turquoise', weight: 1},
-            1: {radius: 0.5, fillColor: 'orange', fillOpacity: 1, color: 'black', weight: 1},
-            2: {radius: 0.5, fillColor: 'yellow', fillOpacity: 1, color: 'black', weight: 1}},
+        a: {0: {radius: 0.6, fillColor: 'purple', fillOpacity: .5, color: 'purple', weight: 1},
+            1: {radius: 0.4, fillColor: 'orange', fillOpacity: 1, color: 'black', weight: 1},
+            2: {radius: 0.4, fillColor: 'yellow', fillOpacity: 1, color: 'black', weight: 1}},
         b: {0: {radius: 0.3, fillColor: 'green', fillOpacity: .5, color: 'green', weight: 1},
             1: {radius: 0.3, fillColor: 'blue', fillOpacity: 1, color: 'black', weight: 1},
             2: {radius: 0.3, fillColor: 'indigo', fillOpacity: 1, color: 'black', weight: 1}},

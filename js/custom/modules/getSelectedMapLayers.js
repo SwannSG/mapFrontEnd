@@ -113,22 +113,12 @@ ws.btnGetDataClicked = (event) => {
 
     let addLayerPromise = (layerDtl) => {
         return new Promise( async (resolve, reject) => {
+            let jsonString = '';
+            let jsonObj = {};
+            let dbKeys = [];
+            dbKeys = await ws.idb.keys()
             if (layerDtl.fileType==='zip') {
-                // ws.promises.zipFileToJson(layerDtl.rsrcId)
-                // .then(jsonObj => {
-                //     ws.layers.addLayer(jsonObj, layerDtl);
-                //     return resolve({layerDtl: layerDtl, state:'done'});
-                // })
-                // .catch(error => {
-                //     // put out some message ???
-                //     return reject(error);
-                // })
-
-                let jsonString = '';
-                let jsonObj = {};
-                let dbKeys = [];
                 try {
-                    dbKeys = await ws.idb.keys()
                     if (dbKeys.includes(layerDtl.rsrcId)) {
                         // get jsonObj from local storage
                         jsonObj = await ws.idb.get(layerDtl.rsrcId);
@@ -145,20 +135,19 @@ ws.btnGetDataClicked = (event) => {
                 catch (error) {
                     return reject(error);
                 }
-
             }
             else {
-                // ws.promises.fileToJson(layerDtl.rsrcId)
-                // .then(jsonObj => {
-                //     ws.layers.addLayer(jsonObj, layerDtl);
-                //     return resolve({layerDtl: layerDtl, state:'done'});
-                // })
-                // .catch(error => {
-                //     // put out some message ???
-                //     return reject(error);
-                // })
                 try {
-                    let jsonObj = await ws.promises.fileToJson(layerDtl.rsrcId);
+                    if (dbKeys.includes(layerDtl.rsrcId)) {
+                        // get jsonObj from local storage
+                        jsonObj = await ws.idb.get(layerDtl.rsrcId);
+                        console.log(layerDtl.rsrcId, 'data from localStore')
+                    }
+                    else {
+                        jsonObj = await ws.promises.fileToJson(layerDtl.rsrcId);
+                        ws.idb.set(layerDtl.rsrcId, jsonObj);
+                        console.log(layerDtl.rsrcId, 'data from server')
+                    }
                     ws.layers.addLayer(jsonObj, layerDtl);
                     return resolve({layerDtl: layerDtl, state:'done'});
                 }

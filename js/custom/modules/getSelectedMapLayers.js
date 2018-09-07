@@ -169,10 +169,11 @@ ws.btnGetDataClicked = (event) => {
         let chloroplethLegend = {};
         for (let each of layersToFetch) {
             if (each.layerType==='point') {
-                let rowObj = {label:'', backgroundColor: '', borderColor: ''};
+                let rowObj = {label:'', backgroundColor: '', borderColor: '', shape:''};
                 rowObj.label = each.legendTitle;
                 rowObj.backgroundColor = each.pointLayerStyle.fillColor;
                 rowObj.borderColor = each.pointLayerStyle.color;
+                rowObj.shape = each.pointLayerStyle.shape;
                 if (pointLegend.hasOwnProperty(each.selectedOption)) {
                     pointLegend[each.selectedOption].push(rowObj)
                 }
@@ -184,6 +185,7 @@ ws.btnGetDataClicked = (event) => {
                 chloroplethLegend[each.legendTitle] = each.layerStyle
             }
         }
+
 
         // sort point labels in alphabetical order
         for (let item in pointLegend) {
@@ -202,7 +204,7 @@ ws.btnGetDataClicked = (event) => {
 
         for (let item in pointLegend) {
             ws.legends.references[item] = ws.legends.createLegend('bottomright', 
-                ws.legends.createLegend_c(item, pointLegend[item]));
+                ws.legends.createLegend_c(item, pointLegend[item]), item.shape);
         }
     }
 

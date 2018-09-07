@@ -9,6 +9,13 @@ ws.DOMContentLoaded = () => {
             ws.btnGetDataClicked(event);
         })
 
+    document.getElementsByClassName('vertical-menu__save')[0].addEventListener('click',
+    (event) => {
+        ws.domToImage.saveMap(event);
+    })
+    
+
+
     ws.hamburgerClicked = (event) => {
         let el = document.getElementsByClassName('user-select')[0];
         if (el.getAttribute('style')==='display: none;') {

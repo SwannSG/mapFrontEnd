@@ -30,6 +30,11 @@
         background-size: contain;
         background-image: url('../img/Spinner-0.7s-52px.svg');
     }
+
+    &__save {
+        font-size: 1rem;
+        color: black;
+    }
 }
 
 .lds-spinner {

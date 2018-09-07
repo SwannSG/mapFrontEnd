@@ -6,21 +6,19 @@
 
 
         <link rel="stylesheet" href="js/libraries/leaflet1.3.3/leaflet.css"/>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous"> -->
 
         <script src="js/libraries/leaflet1.3.3/leaflet-src.js"></script>
         <script src="js/libraries/topojson3.0.2/topojson.min.js"></script>
         <script src="js/libraries/jszip/jszip.min.js"></script>
+        <script src="js/libraries/svgShapeMarkers/leaflet-svg-shape-markers.js"></script>
+        <script src="js/libraries/dom-to-image/dom-to-image.js"></script>
+
         <link rel="stylesheet" href="css/style.css" type="text/css">
 
    <title>Womans Shelters</title>
-    </head>
+</head>
 <body>
-
-
-    <!-- <object type="image/svg+xml" data="img/Spinner-0.7s-52px.svg" class="vertical-menu__entity vertical-menu__spinner">
-        Your browser does not support SVG
-    </object> -->
 
 <div class="vertical-menu">
     <div class="vertical-menu__item">
@@ -42,6 +40,16 @@
         <div class="vertical-menu__entity vertical-menu__spinner">
         </div>
     </div>
+
+    <div class="vertical-menu__item">
+        <!-- <a class="vertical-menu__entity vertical-menu__save" 
+            href="#" download="someFile.jpeg">
+            Save
+        </a> -->
+        <div class="vertical-menu__entity vertical-menu__save">
+            Save
+        </div>
+    </div>
 </div>
 
 
@@ -59,6 +67,8 @@
     <script type="text/javascript" src="js/custom/modules/mapLayers.js"></script>
     <script type="text/javascript" src="js/custom/modules/mapLegends.js"></script>
     <script type="text/javascript" src="js/custom/modules/getSelectedMapLayers.js"></script>
+    <script src="js/libraries/FileSaver/fileSaver.js"></script>
+    <script type="text/javascript" src="js/custom/modules/domToImage.js"></script>
 </body>
 </html>
 

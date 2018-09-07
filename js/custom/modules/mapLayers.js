@@ -26,13 +26,39 @@ ws.layers.addLayer = (data, layerDtl) => {
     }
 
     else if (layerDtl.layerType==='point') {
-        let styleObj = ws.layers.pointToLayerStyle(layerDtl.pointLayerStyle);
-        layer = L.geoJSON(geojsonData, {
-            pointToLayer: function(feature, latlng) {
-                return L.circleMarker(latlng, styleObj)
-                    .bindPopup(feature.properties.name);
-            }
-        })
+
+        console.log(layerDtl);
+
+
+        if (layerDtl.pointLayerStyle.shape==='circle') {
+            let styleObj = ws.layers.pointToLayerStyle(layerDtl.pointLayerStyle);
+            layer = L.geoJSON(geojsonData, {
+                pointToLayer: function(feature, latlng) {
+                    return L.circleMarker(latlng, styleObj)
+                        .bindPopup(feature.properties.name);
+                }
+            })
+        }
+        else if (layerDtl.pointLayerStyle.shape==='square') {
+            let styleObj = ws.layers.pointToLayerStyle(layerDtl.pointLayerStyle);
+            styleObj.shape = 'square'
+            layer = L.geoJSON(geojsonData, {
+                pointToLayer: function(feature, latlng) {
+                    return L.shapeMarker(latlng, styleObj)
+                        .bindPopup(feature.properties.name);
+                }
+            })
+        }
+        else if (layerDtl.pointLayerStyle.shape==='diamond') {
+            let styleObj = ws.layers.pointToLayerStyle(layerDtl.pointLayerStyle);
+            styleObj.shape = 'diamond'
+            layer = L.geoJSON(geojsonData, {
+                pointToLayer: function(feature, latlng) {
+                    return L.shapeMarker(latlng, styleObj)
+                        .bindPopup(feature.properties.name);
+                }
+            })
+        }
     }
 
     layer.addTo(ws.map);

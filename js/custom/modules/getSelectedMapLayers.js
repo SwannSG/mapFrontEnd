@@ -211,8 +211,6 @@ ws.btnGetDataClicked = (event) => {
 
     // read UI
     let layersToFetch = readUIselectorValues();
-    gt = layersToFetch;
-
 
     // remove some layers from existing map
     removeLayers(layersToFetch);
@@ -221,7 +219,6 @@ ws.btnGetDataClicked = (event) => {
     makeLegend(layersToFetch);
 
     let addLayersPromises = [];
-    gp = addLayersPromises;
     for (let layerDtl of layersToFetch) {
         if (layerDtl.onMap) {
             // layer already on map. Do nothing.
@@ -246,6 +243,8 @@ ws.btnGetDataClicked = (event) => {
             }
         }
         turnSpinnerOff();
+        // hide UI selection
+        document.getElementsByClassName('user-select')[0].setAttribute('style','display:none;');
     })
     .catch((error) => {
         console.log(error);

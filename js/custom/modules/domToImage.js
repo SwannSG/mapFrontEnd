@@ -1,17 +1,31 @@
 // https://github.com/tsayen/dom-to-image
 
-// a = domtoimage.toPng(document.getElementById('map'))
-
 ws.domToImage = {}
 ws.domToImage.saveMap = async (event) => {
-    let style = {height:'100%', width:'100%'}
+
+    // briefly remove zoom
+    ws.toggleMapZoomControlDisplay()
+
+    let blob;
+    let styleObj = {}
 
 
-    let blob = await domtoimage.toPng(document.getElementById('map'), {style: style, quality: .95});
+    let computedStyle = window.getComputedStyle(document.getElementsByClassName('main')[0])
+    styleObj.height = Math.ceil(computedStyle.height);
+    styleObj.width = Math.ceil(computedStyle.width);
+    styleObj.bgcolor = 'red';
+   
+    try {
+        blob = await domtoimage.toJpeg(document.getElementsByClassName('main')[0], styleObj);
+    }
+    catch (error) {
+        console.log(error);
+    }
     const a = document.createElement('a');
     a.href = 'data:image/png' + blob;
-    a.setAttribute('download', 'fileName.png')
-    g = a;
-    // el.setAttribute('href', 'image/png' + encodeURIComponent(blob));
-    // el.click();
+    a.setAttribute('download', 'map.jpg')
+    a.click();
+
+    // add zoom back to map
+    ws.toggleMapZoomControlDisplay()
 }

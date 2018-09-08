@@ -27,9 +27,6 @@ ws.layers.addLayer = (data, layerDtl) => {
 
     else if (layerDtl.layerType==='point') {
 
-        console.log(layerDtl);
-
-
         if (layerDtl.pointLayerStyle.shape==='circle') {
             let styleObj = ws.layers.pointToLayerStyle(layerDtl.pointLayerStyle);
             layer = L.geoJSON(geojsonData, {

@@ -85,7 +85,6 @@ ws.legends.createLegend_c = (title, rows) => {
                     </div>`
     let rowsHtml = [];
     for (let each of rows) {
-        console.log('aaa', each);
         let each_row =  `<div class="legend-c__row">
                             <div class="legend-c__swatch">
                                 <div class="legend-c__swatch-${each.shape}"
